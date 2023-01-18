@@ -1,13 +1,57 @@
 import React, {useState} from 'react';
+import { useEffect } from 'react';
 
 const Problem1 = () => {
 
     const [show, setShow] = useState('all');
+    const[name,setName] = useState('');
+    const[status,setStatus] = useState('');
+    const [people,setPeople] = useState([]);
+    const [peopleToShow,setPeopleToShow] = useState([]);
 
+
+    const handleNameChange = (event)=>{
+        setName(event.target.value);
+    }
+    const handleStatusChange = (event)=>{
+        setStatus(event.target.value.toLowerCase());
+        
+    }
+    const updateContainer = (event)=>{
+        event.preventDefault();
+        if(/^[A-Za-z]*$/.test(name) && ['active','completed'].indexOf(status)!=-1){
+            setPeople([...people,{name,status}]);
+        }
+        else{
+            alert("Name should contain only alphabets and status can be active/completed");
+        }
+    }
     const handleClick = (val) =>{
         setShow(val);
+        if(val=='all')
+        setPeopleToShow([...people]);
+        else if(val=='active')
+        {
+            setPeopleToShow(people.filter(person=>person.status=='active'));
+        }
+        else{
+            setPeopleToShow(people.filter(person=>person.status=='completed'));
+        }
     }
-
+    useEffect(()=>{
+        setName('');
+        setStatus('');
+        if(show=='all')
+        setPeopleToShow([...people]);
+        else if(show=='active')
+        {
+            setPeopleToShow(people.filter(person=>person.status=='active'));
+        }
+        else{
+            setPeopleToShow(people.filter(person=>person.status=='completed'));
+        }
+    },[people])
+    console.log(name,status);
     return (
 
         <div className="container">
@@ -16,13 +60,19 @@ const Problem1 = () => {
                 <div className="col-6 ">
                     <form className="row gy-2 gx-3 align-items-center mb-4">
                         <div className="col-auto">
-                            <input type="text" className="form-control" placeholder="Name"/>
+                            <input type="text" className="form-control" placeholder="Name"
+                            value={name} onChange={handleNameChange}/>
                         </div>
                         <div className="col-auto">
-                            <input type="text" className="form-control" placeholder="Status"/>
+                            <input type="text" className="form-control" placeholder="Status"
+                            value={status}
+                            onChange={handleStatusChange}
+                            />
                         </div>
                         <div className="col-auto">
-                            <button type="submit" className="btn btn-primary">Submit</button>
+                            <button type="submit" className="btn btn-primary"
+                            onClick={updateContainer}
+                            >Submit</button>
                         </div>
                     </form>
                 </div>
@@ -47,7 +97,17 @@ const Problem1 = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        
+                            {
+                                peopleToShow.map((item,id)=>
+                                    <tr key={id}>
+                                    <td scope='col'>
+                                        {item.name}
+                                    </td>
+                                    <td scope='col'>
+                                        {item.status}
+                                    </td>  
+                                    </tr>)
+                            }
                         </tbody>
                     </table>
                 </div>
