@@ -19,17 +19,37 @@ const Problem1 = () => {
     }
     const updateContainer = (event)=>{
         event.preventDefault();
-        if(/^[A-Za-z]*$/.test(name) && ['active','completed'].indexOf(status)!=-1){
+        if(/^[A-Za-z]*$/.test(name) && /^[A-Za-z]*$/.test(status)){
             setPeople([...people,{name,status}]);
         }
         else{
-            alert("Name should contain only alphabets and status can be active/completed");
+            alert("Name and status should contain only alphabets");
         }
     }
     const handleClick = (val) =>{
         setShow(val);
-        if(val=='all')
-        setPeopleToShow([...people]);
+        if(val=='all'){
+            let temporary = [...people];
+            setPeopleToShow(temporary.sort((a, b) => {
+                if (a.status === 'active' && b.status !== 'active') {
+                  return -1;
+                } else if (a.status !== 'active' && b.status === 'active') {
+                  return 1;
+                } else if (a.status === 'completed' && b.status !== 'completed') {
+                  return -1;
+                } else if (a.status !== 'completed' && b.status === 'completed') {
+                  return 1;
+                } else {
+                  if (a.name < b.name) {
+                    return -1;
+                  }
+                  if (a.name > b.name) {
+                    return 1;
+                  }
+                  return 0;
+                }
+              }));
+        }
         else if(val=='active')
         {
             setPeopleToShow(people.filter(person=>person.status=='active'));
@@ -41,8 +61,28 @@ const Problem1 = () => {
     useEffect(()=>{
         setName('');
         setStatus('');
-        if(show=='all')
-        setPeopleToShow([...people]);
+        if(show=='all'){
+            let temporary = [...people];
+            setPeopleToShow(temporary.sort((a, b) => {
+                if (a.status === 'active' && b.status !== 'active') {
+                  return -1;
+                } else if (a.status !== 'active' && b.status === 'active') {
+                  return 1;
+                } else if (a.status === 'completed' && b.status !== 'completed') {
+                  return -1;
+                } else if (a.status !== 'completed' && b.status === 'completed') {
+                  return 1;
+                } else {
+                  if (a.name < b.name) {
+                    return -1;
+                  }
+                  if (a.name > b.name) {
+                    return 1;
+                  }
+                  return 0;
+                }
+              }));
+        }
         else if(show=='active')
         {
             setPeopleToShow(people.filter(person=>person.status=='active'));
